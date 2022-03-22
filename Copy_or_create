@@ -9,23 +9,33 @@
 # check if the creation was successful and echo to the user if it was successful or not
 # if the user replies n to the file creation then echo Goodbye and exit.
 
-#Usage Copy_or_create.sh file_name
-
 #!/bin/bash
+Error_msg="Usage: Copy_or_create.sh file_name"
+if [[ $# -eq 0 ]];then
+	echo "Please enter file name, " $Error_msg
+	exit 0
+fi
 file=$1
+DIR=Found_Files_Dir
 if [ -f $file ]; then
 	echo "The file Exists"
-	if [ -f Found_Files_Dir/$file.jn ];then
+	if [ -f $DIR/$file.jn ];then
 		echo "You have already a copy of the file in jn format"
 	else
-		cp $file Found_Files_Dir/$file.jn
+		if [ -d $DIR ];then
+			cp $file $DIR/$file.jn
+		else
+			mkdir $DIR
+			cp $file $DIR/$file.jn
+		fi
 		status=$?
 		if [[ $status -eq 1 ]];then
 			echo "Apologies, copying the file Failed! the issue is under investigation, please check again later"
 		else
 			echo "Copy of the file was made successfully!"
-	fi
 		fi
+	fi
+	
 else
 	echo "No file, need to create"
 	read -p "Would like to create $file ?(y/n) " answer
